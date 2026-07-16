@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.IdentityModel.Tokens;
 using ProjectAcademy.DBContext;
 using ProjectAcademy.EndPointsAndControllers;
+using ProjectAcademy.Jwt;
 using ProjectAcademy.Services;
 using ProjectAcademy.Validation;
 
@@ -16,7 +18,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-       
+        ValidIssuer = AuthenticationOptions.ISSUER,
+        ValidateAudience = true,
+        ValidAudience = AuthenticationOptions.AUDIENCE,
+        ValidateLifetime = true,
+        IssuerSigningKey = AuthenticationOptions.GetSymmetricSecurityKey(),
+        ValidateIssuerSigningKey = true,
     };
 });
 builder.Services.AddSingleton<PostgresCreate>();
@@ -28,6 +35,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(); 
 }
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapAuth();
 app.MapControllers();
 

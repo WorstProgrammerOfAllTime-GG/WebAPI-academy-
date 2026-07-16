@@ -5,7 +5,7 @@ using ProjectAcademy.Jwt;
 
 namespace ProjectAcademy.Authorization_and_authentication_JWT_approach_
 {
-    public class CreateToken
+    public class CreaterToken
     {
         public static JwtSecurityToken GetJwtToken(List<Claim> claims)
         {

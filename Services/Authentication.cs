@@ -1,12 +1,17 @@
-﻿using ProjectAcademy.Models;
-using ProjectAcademy.EndPointsAndControllers;
-using ProjectAcademy.DBContext;
-using ProjectAcademy.Validation;
-using Npgsql;
-using Dapper;
+﻿using Dapper;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.IdentityModel.Tokens;
+using Npgsql;
+using ProjectAcademy.DBContext;
+using ProjectAcademy.EndPointsAndControllers;
+using ProjectAcademy.Jwt;
+using ProjectAcademy.Models;
+using ProjectAcademy.Validation;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
-
+using ProjectAcademy.Authorization_and_authentication_JWT_approach_;
 
 namespace ProjectAcademy.Services
 {
@@ -41,8 +46,9 @@ namespace ProjectAcademy.Services
             });
         }
 
-        public async Task Login (RequestLogin request)
+        public async Task<string> Login (RequestLogin request)
         {
+            List<Claim> claims;
             using var db = _postgres.CreateConnection();
 
             var student = await db.QueryFirstOrDefaultAsync<Students>("SELECT * FROM Students " +
@@ -56,15 +62,19 @@ namespace ProjectAcademy.Services
                 bool isValid = BCrypt.Net.BCrypt.Verify(request.Password, student.Password);
                 if (isValid)
                 {
+                    claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, student.ID.ToString()),
+                        new Claim(ClaimTypes.Name, student.FullName),
+                        new Claim(ClaimTypes.Email, student.Email),
+                        new Claim(ClaimTypes.MobilePhone, student.PhoneNumber)
+                    };
 
+                    var jwt = CreaterToken.GetJwtToken(claims);
+                    return new JwtSecurityTokenHandler().WriteToken(jwt);
                 }
-                else throw new AuthException("Invalid data");
-            } else throw new ArgumentNullException("Student don't found");
-            
-
-           
-            
-       
+                else throw new UnauthorizedAccessException("Invalid data");
+            } else throw new NullReferenceException("Student not found");                              
         }
     }
 }

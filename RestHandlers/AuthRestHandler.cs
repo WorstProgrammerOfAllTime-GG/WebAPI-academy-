@@ -29,19 +29,13 @@ namespace ProjectAcademy.EndPointsAndControllers
                 {
                     await login.Login(request);
                     return Results.Ok();
-                } catch (ArgumentNullException ex)
+                }  
+                catch (NullReferenceException ex)
                 {
-                    return Results.BadRequest(new
-                    {
-                        message = ex.Message
-                    });
-
-                } catch (AuthException ex)
+                    return Results.Unauthorized();                               
+                } catch (UnauthorizedAccessException ex)
                 {
-                    return Results.BadRequest(new
-                    {
-                        message = ex.Message
-                    });
+                    return Results.Unauthorized();
                 }
                 
             });
@@ -79,18 +73,13 @@ namespace ProjectAcademy.EndPointsAndControllers
             {
                 await _auth.Login(request);
                 return Ok();
-            } catch (ArgumentNullException ex)
+            }  catch (NullReferenceException ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
-            } catch (AuthException ex)
+                return Unauthorized();
+               
+            } catch (UnauthorizedAccessException ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
+                return Unauthorized();
             }
             
         }
