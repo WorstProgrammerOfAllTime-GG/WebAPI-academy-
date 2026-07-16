@@ -43,7 +43,28 @@ namespace ProjectAcademy.Services
 
         public async Task Login (RequestLogin request)
         {
+            using var db = _postgres.CreateConnection();
 
+            var student = await db.QueryFirstOrDefaultAsync<Students>("SELECT * FROM Students " +
+                "WHERE Email = (@Email) OR PhoneNumber = (@PhoneNumber)", new
+                {
+                    Email = request.Email,
+                    PhoneNumber = request.PhoneNumber
+                });
+            if (student != null)
+            {
+                bool isValid = BCrypt.Net.BCrypt.Verify(request.Password, student.Password);
+                if (isValid)
+                {
+
+                }
+                else throw new AuthException("Invalid data");
+            } else throw new ArgumentNullException("Student don't found");
+            
+
+           
+            
+       
         }
     }
 }

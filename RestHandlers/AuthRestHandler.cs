@@ -25,8 +25,25 @@ namespace ProjectAcademy.EndPointsAndControllers
             });
             routeBuilder.MapPost("/login", async (RequestLogin request, Authentication login)=>
             {
-                await login.Login(request);
-                return Results.Ok();
+                try
+                {
+                    await login.Login(request);
+                    return Results.Ok();
+                } catch (ArgumentNullException ex)
+                {
+                    return Results.BadRequest(new
+                    {
+                        message = ex.Message
+                    });
+
+                } catch (AuthException ex)
+                {
+                    return Results.BadRequest(new
+                    {
+                        message = ex.Message
+                    });
+                }
+                
             });
         }   
     }
@@ -62,7 +79,13 @@ namespace ProjectAcademy.EndPointsAndControllers
             {
                 await _auth.Login(request);
                 return Ok();
-            } catch (ValidationException ex)
+            } catch (ArgumentNullException ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            } catch (AuthException ex)
             {
                 return BadRequest(new
                 {
