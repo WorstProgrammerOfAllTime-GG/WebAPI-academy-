@@ -27,8 +27,8 @@ namespace ProjectAcademy.EndPointsAndControllers
             {
                 try
                 {
-                    await login.Login(request);
-                    return Results.Ok();
+                   string jwtToken = await login.Login(request);
+                   return Results.Ok(jwtToken);
                 }  
                 catch (NullReferenceException ex)
                 {

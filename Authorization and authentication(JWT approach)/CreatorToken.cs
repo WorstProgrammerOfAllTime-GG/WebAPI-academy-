@@ -5,16 +5,19 @@ using ProjectAcademy.Jwt;
 
 namespace ProjectAcademy.Authorization_and_authentication_JWT_approach_
 {
-    public class CreaterToken
+    public class CreatorToken
     {
-        public static JwtSecurityToken GetJwtToken(List<Claim> claims)
-        {
+        private readonly AuthenticationOptions _options;
+        public CreatorToken(AuthenticationOptions options) => _options = options;
+        
+        public JwtSecurityToken GetJwtToken(List<Claim> claims)
+        {      
             var jwt = new JwtSecurityToken(
                          issuer: AuthenticationOptions.ISSUER,
                          audience: AuthenticationOptions.AUDIENCE,
                          claims: claims,
-                         notBefore: DateTime.UtcNow.Add(TimeSpan.FromMinutes(20)),
-                         signingCredentials: new SigningCredentials(AuthenticationOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)
+                         expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(20)),
+                         signingCredentials: new SigningCredentials(_options.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)
                        );
             return jwt;
         }

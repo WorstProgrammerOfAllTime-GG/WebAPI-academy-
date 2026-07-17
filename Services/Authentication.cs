@@ -19,10 +19,12 @@ namespace ProjectAcademy.Services
     {
         private readonly PostgresCreate _postgres;
         private readonly Validator _validator;
-        public Authentication(PostgresCreate postgres, Validator validator)
+        private readonly CreatorToken _creatorToken;
+        public Authentication(PostgresCreate postgres, Validator validator, CreatorToken createrToken)
         {
             _postgres = postgres;
             _validator = validator;
+            _creatorToken = createrToken;
         }
         public async Task Registration(RequestReg request)
         {
@@ -52,7 +54,7 @@ namespace ProjectAcademy.Services
             using var db = _postgres.CreateConnection();
 
             var student = await db.QueryFirstOrDefaultAsync<Students>("SELECT * FROM Students " +
-                "WHERE Email = (@Email) OR PhoneNumber = (@PhoneNumber)", new
+                "WHERE Email = @Email OR PhoneNumber = @PhoneNumber", new
                 {
                     Email = request.Email,
                     PhoneNumber = request.PhoneNumber
@@ -70,7 +72,7 @@ namespace ProjectAcademy.Services
                         new Claim(ClaimTypes.MobilePhone, student.PhoneNumber)
                     };
 
-                    var jwt = CreaterToken.GetJwtToken(claims);
+                    var jwt = _creatorToken.GetJwtToken(claims);
                     return new JwtSecurityTokenHandler().WriteToken(jwt);
                 }
                 else throw new UnauthorizedAccessException("Invalid data");
