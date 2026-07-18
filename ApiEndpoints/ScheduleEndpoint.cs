@@ -1,14 +1,15 @@
 ﻿
+using Microsoft.AspNetCore.Mvc;
 using ProjectAcademy.Services;
 
 namespace ProjectAcademy.RestHandlers
 {
     
-    public static class ScheduleEndPoint
+    public static class ScheduleEndpoint
     {
         public static void MapSchedule(this IEndpointRouteBuilder routeBuilder)
         {
-            routeBuilder.MapGet("/schedule", async (HttpContext context, DataSchedule schedule) =>
+            routeBuilder.MapGet("endpoint/schedule", async (HttpContext context, ScheduleService schedule) =>
             {
                 try
                 {

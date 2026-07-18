@@ -1,4 +1,4 @@
-﻿namespace ProjectAcademy.Models
+﻿namespace ProjectAcademy.Models.DTO
 {
     public class StudentSchedule
     {

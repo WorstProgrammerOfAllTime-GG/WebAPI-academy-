@@ -1,15 +1,15 @@
 ﻿using Dapper;
 using Npgsql;
 using ProjectAcademy.DBContext;
-using ProjectAcademy.Models;
+using ProjectAcademy.Models.DTO;
 using System.Security.Claims;
 
 namespace ProjectAcademy.Services
 {
-    public class DataSchedule
+    public class ScheduleService
     {
-        private readonly PostgresCreate _postgres;
-        public DataSchedule(PostgresCreate postgres)=> _postgres = postgres;
+        private readonly PostgresConnectionProvider _postgres;
+        public ScheduleService(PostgresConnectionProvider postgres)=> _postgres = postgres;
        
         public async Task<IEnumerable<StudentSchedule>> GetSchedule(HttpContext context)
         {

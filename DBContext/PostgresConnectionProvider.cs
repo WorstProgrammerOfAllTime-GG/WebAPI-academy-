@@ -2,10 +2,10 @@
 
 namespace ProjectAcademy.DBContext
 {
-    public class PostgresCreate
+    public class PostgresConnectionProvider
     {
         private readonly string connection;
-        public PostgresCreate(IConfiguration configuration)
+        public PostgresConnectionProvider(IConfiguration configuration)
         {
             connection = configuration["ConnectionStrings:DefaultConnection"] ?? throw new InvalidOperationException(nameof(configuration)); 
         }

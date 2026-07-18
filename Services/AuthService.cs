@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
+using ProjectAcademy.Authorization_and_authentication_JWT_approach_;
+using ProjectAcademy.Contracts;
 using ProjectAcademy.DBContext;
 using ProjectAcademy.EndPointsAndControllers;
 using ProjectAcademy.Jwt;
@@ -11,22 +13,21 @@ using ProjectAcademy.Validation;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
-using ProjectAcademy.Authorization_and_authentication_JWT_approach_;
 
 namespace ProjectAcademy.Services
 {
-    public class Authentication
+    public class AuthService
     {
-        private readonly PostgresCreate _postgres;
+        private readonly PostgresConnectionProvider _postgres;
         private readonly Validator _validator;
         private readonly CreatorToken _creatorToken;
-        public Authentication(PostgresCreate postgres, Validator validator, CreatorToken createrToken)
+        public AuthService(PostgresConnectionProvider postgres, Validator validator, CreatorToken createrToken)
         {
             _postgres = postgres;
             _validator = validator;
             _creatorToken = createrToken;
         }
-        public async Task Registration(RequestReg request)
+        public async Task RegisterStudent(RegisterStudentRequest request)
         {
             string fullName =  _validator.Validation(request.FullName,  fullname=> !string.IsNullOrEmpty(fullname), "FullName is empty or null");
             string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
@@ -48,7 +49,7 @@ namespace ProjectAcademy.Services
             });
         }
 
-        public async Task<string> Login (RequestLogin request)
+        public async Task<string> Login (LoginRequest request)
         {
             List<Claim> claims;
             using var db = _postgres.CreateConnection();

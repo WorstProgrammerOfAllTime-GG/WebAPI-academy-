@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using ProjectAcademy.Authorization_and_authentication_JWT_approach_;
@@ -36,7 +35,6 @@ builder.Services.AddSwaggerGen(options =>
         });
 });
 builder.Services.AddSingleton<AuthenticationOptions>();
-//builder.Services.AddSingleton<IConfigureNamedOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
 builder.Services.AddAuthorization();
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -57,12 +55,12 @@ builder.Services
                 .GetSymmetricSecurityKey()
         };
     });
-builder.Services.AddSingleton<PostgresCreate>();
-builder.Services.AddScoped<Authentication>();
+builder.Services.AddSingleton<PostgresConnectionProvider>();
+builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<Validator>();
 builder.Services.AddSingleton<AuthenticationOptions>();
 builder.Services.AddSingleton<CreatorToken>();
-builder.Services.AddScoped<DataSchedule>();
+builder.Services.AddScoped<ScheduleService>();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -71,7 +69,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapAuth();
+app.MapAuthEndpoints();
 app.MapSchedule();
 app.MapControllers();
 app.Run();

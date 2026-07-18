@@ -6,8 +6,8 @@ namespace ProjectAcademy.Validation
 {
     public class Validator
     {
-        private readonly PostgresCreate _postgres;
-        public Validator(PostgresCreate postgres)=> _postgres = postgres;
+        private readonly PostgresConnectionProvider _postgres;
+        public Validator(PostgresConnectionProvider postgres)=> _postgres = postgres;
        
         public string Validation(string data, Func<string, bool> func, string error)
         {
