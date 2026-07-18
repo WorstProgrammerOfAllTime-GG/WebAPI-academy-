@@ -5,6 +5,7 @@ using ProjectAcademy.Authorization_and_authentication_JWT_approach_;
 using ProjectAcademy.DBContext;
 using ProjectAcademy.EndPointsAndControllers;
 using ProjectAcademy.Jwt;
+using ProjectAcademy.Middlewares;
 using ProjectAcademy.RestHandlers;
 using ProjectAcademy.Services;
 using ProjectAcademy.Validation;
@@ -62,6 +63,7 @@ builder.Services.AddSingleton<AuthenticationOptions>();
 builder.Services.AddSingleton<CreatorToken>();
 builder.Services.AddScoped<ScheduleService>();
 var app = builder.Build();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

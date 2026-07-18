@@ -15,11 +15,8 @@ namespace ProjectAcademy.EndPointsAndControllers
                     await reg.RegisterStudent(request);
                     return Results.Ok();
                 } catch (ValidationException ex)
-                {               
-                    return Results.BadRequest(new
-                    {
-                        message = ex.Message,
-                    });                      
+                {
+                    return Results.BadRequest();                  
                 }
                           
             });

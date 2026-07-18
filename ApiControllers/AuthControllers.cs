@@ -12,11 +12,8 @@ namespace ProjectAcademy.AuthControllers
     public class AuthControllers : ControllerBase
     {
         private readonly AuthService _auth;
-        private readonly ILogger<AuthControllers> _logger;
-        public AuthControllers(AuthService auth, ILogger<AuthControllers> logger)
-        {
-            _auth = auth; _logger = logger;
-        }
+        public AuthControllers(AuthService auth) => _auth = auth;
+
 
         [HttpPost("registration")]
 
@@ -28,10 +25,8 @@ namespace ProjectAcademy.AuthControllers
                 return Ok();
             }
             catch (ValidationException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return BadRequest();
-                
+            {            
+                return BadRequest();             
             }
 
         }
@@ -44,14 +39,11 @@ namespace ProjectAcademy.AuthControllers
                 return Ok(jwtToken);
             }
             catch (NullReferenceException ex)
-            {
-                _logger.LogError(ex, ex.Message);
+            {         
                 return Unauthorized();
-
             }
             catch (UnauthorizedAccessException ex)
             {
-                _logger.LogError(ex, ex.Message);
                 return Unauthorized();
             }
 
